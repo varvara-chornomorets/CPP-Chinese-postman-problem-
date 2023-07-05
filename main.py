@@ -79,29 +79,28 @@ def generate_graphs(num_vertices, num_graphs):
 
 # how to use generator
 generate_graphs(4, 2)
+def readGraphs():
+    parent_directory = 'graphs'  # Parent directory name
 
+    # Iterate over directories within the parent directory
+    for directory in os.listdir(parent_directory):
+        directory_path = os.path.join(parent_directory, directory)  # Full directory path
 
-parent_directory = 'graphs'  # Parent directory name
+        # Check if the item in the parent directory is a directory
+        if os.path.isdir(directory_path):
+            print(f"STARTING NEW DIRECTORY{directory}")
+            # Iterate over files within the directory
+            for filename in os.listdir(directory_path):
+                if filename.endswith('.csv'):  # Check if the file is a CSV file
+                    file_path = os.path.join(directory_path, filename)  # Full file path
 
-# Iterate over directories within the parent directory
-for directory in os.listdir(parent_directory):
-    directory_path = os.path.join(parent_directory, directory)  # Full directory path
+                    # Open and read the file
+                    with open(file_path, 'r') as file:
+                        # Read the file content
+                        content = file.read()
 
-    # Check if the item in the parent directory is a directory
-    if os.path.isdir(directory_path):
-        print(f"STARTING NEW DIRECTORY{directory}")
-        # Iterate over files within the directory
-        for filename in os.listdir(directory_path):
-            if filename.endswith('.csv'):  # Check if the file is a CSV file
-                file_path = os.path.join(directory_path, filename)  # Full file path
-
-                # Open and read the file
-                with open(file_path, 'r') as file:
-                    # Read the file content
-                    content = file.read()
-
-                # Process the file content as needed
-                print(f"Processing file '{filename}' in directory '{directory}':")
-                print(content)
-                print()
+                    # Process the file content as needed
+                    print(f"Processing file '{filename}' in directory '{directory}':")
+                    print(content)
+                    print()
 
