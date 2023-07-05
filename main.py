@@ -104,3 +104,8 @@ def readGraphs():
                     print(content)
                     print()
 
+    return
+readGraphs()
+
+
+
