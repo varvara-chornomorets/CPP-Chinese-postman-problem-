@@ -3,6 +3,7 @@ import os
 import random
 import string
 
+
 def generate_graphs(num_vertices, num_graphs):
     def generate_node_labels():
         alphabet = string.ascii_uppercase
@@ -41,7 +42,7 @@ def generate_graphs(num_vertices, num_graphs):
         return len(visited) == len(nodes)
 
     for i in range(num_graphs):
-        filename = f"file_{i+1}.csv"  # Construct the filename for each CSV file
+        filename = f"file_{i + 1}.csv"  # Construct the filename for each CSV file
         filepath = os.path.join(directory, filename)  # Create the full filepath
 
         graph = {}  # Initialize an empty graph
@@ -77,8 +78,11 @@ def generate_graphs(num_vertices, num_graphs):
 
         print(f"CSV file '{filename}' is connected with {edges_added} edges.")
 
+
 # how to use generator
 generate_graphs(4, 2)
+
+
 def readGraphs():
     parent_directory = 'graphs'  # Parent directory name
 
@@ -105,7 +109,17 @@ def readGraphs():
                     print()
 
     return
+
+
 readGraphs()
 
 
+def findCPP():
+    # if all vertices are even
+    #      find euliarian cycle
+    # if not all vertices are even
+    #          1. find odds
+    #          2. pair them somehow (add new dublicating edges) and see what's going to be cheaper
+    #          3. find eulerian cycle for new graph
 
+    return 5
