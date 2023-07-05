@@ -1,0 +1,11 @@
+node1,node2,trail,distance
+C,D,trail_1,4
+I,E,trail_2,7
+D,I,trail_3,4
+B,I,trail_4,4
+E,C,trail_5,9
+F,E,trail_6,8
+H,J,trail_7,10
+J,A,trail_8,10
+H,B,trail_9,5
+G,F,trail_10,6
