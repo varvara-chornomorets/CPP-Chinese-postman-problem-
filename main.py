@@ -79,10 +79,6 @@ def generate_graphs(num_vertices, num_graphs):
         print(f"CSV file '{filename}' is connected with {edges_added} edges.")
 
 
-# how to use generator
-generate_graphs(4, 2)
-
-
 def readGraphs():
     parent_directory = 'graphs'  # Parent directory name
 
@@ -111,7 +107,29 @@ def readGraphs():
     return
 
 
-readGraphs()
+def find_vertices_with_odd_degree(csv_file):
+    degrees = {}
+
+    # Read the CSV file and count the occurrences of each vertex
+    with open(csv_file, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            node1 = row['node1']
+            node2 = row['node2']
+
+            if node1 in degrees:
+                degrees[node1] += 1
+            else:
+                degrees[node1] = 1
+
+            if node2 in degrees:
+                degrees[node2] += 1
+            else:
+                degrees[node2] = 1
+
+    # Find vertices with odd degree
+    odd_vertices = [vertex for vertex, degree in degrees.items() if degree % 2 == 1]
+    return odd_vertices
 
 
 def findCPP():
@@ -123,3 +141,6 @@ def findCPP():
     #          3. find eulerian cycle for new graph
 
     return 5
+
+odd_vert = find_vertices_with_odd_degree("C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs_10_5/file_1.csv")
+print(odd_vert)
