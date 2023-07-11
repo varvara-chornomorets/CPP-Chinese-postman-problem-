@@ -1,7 +1,7 @@
-import csv
 import os
 import random
 import string
+import csv
 
 
 def generate_graphs(num_vertices, num_graphs):
@@ -80,28 +80,34 @@ def generate_graphs(num_vertices, num_graphs):
 
 
 def readGraphs():
-    parent_directory = 'graphs'  # Parent directory name
+    parent_directory = 'graphs'  # parent directory name
 
-    # Iterate over directories within the parent directory
+    # iterate over all directories
     for directory in os.listdir(parent_directory):
         directory_path = os.path.join(parent_directory, directory)  # Full directory path
 
-        # Check if the item in the parent directory is a directory
+        # check if the item is a directory
         if os.path.isdir(directory_path):
             print(f"STARTING NEW DIRECTORY{directory}")
-            # Iterate over files within the directory
+            # iterate over files in the directory
             for filename in os.listdir(directory_path):
-                if filename.endswith('.csv'):  # Check if the file is a CSV file
-                    file_path = os.path.join(directory_path, filename)  # Full file path
+                if filename.endswith('.csv'):  # check if the file is a csv
+                    file_path = os.path.join(directory_path, filename)  # full file path
 
-                    # Open and read the file
-                    with open(file_path, 'r') as file:
-                        # Read the file content
-                        content = file.read()
-
-                    # Process the file content as needed
+                    # do everything we need
+                    # THIS SHOULD WORK ONLY IF GRAPHS ARE EULErIAN SO WE WILL CHANge IT
                     print(f"Processing file '{filename}' in directory '{directory}':")
-                    print(content)
+                    try:
+                        graph, costs = read_graph_from_csv(file_path)
+
+                        # for vertex, edges in graph.items():
+                        #     print(vertex, "->", edges)
+
+                        eulerian_cycle, cost = find_eulerian_cycle(graph, costs)
+                        print("Eulerian Cycle:", "->".join(eulerian_cycle))
+                    except Exception:
+                        print("graph is not eulerian i guess")
+                        pass
                     print()
 
     return
@@ -141,8 +147,6 @@ def findCPP():
     #          3. find eulerian cycle for new graph
 
     return 5
-
-import csv
 
 
 def read_graph_from_csv(file_path):
@@ -193,13 +197,4 @@ def find_eulerian_cycle(graph, costs):
     return cycle, cost
 
 
-
-
-file_path = 'C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs_10_5/file_1.csv'
-graph, costs = read_graph_from_csv(file_path)
-
-for vertex, edges in graph.items():
-    print(vertex, "->", edges)
-
-eulerian_cycle, cost = find_eulerian_cycle(graph, costs)
-print("Eulerian Cycle:", "->".join(eulerian_cycle))
+readGraphs()
