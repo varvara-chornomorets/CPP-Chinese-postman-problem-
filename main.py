@@ -78,14 +78,48 @@ def generate_graphs(num_vertices, num_graphs):
 
         print(f"CSV file '{filename}' is connected with {edges_added} edges.")
 
+def make_magic(graph: dict, costs: dict, odd_vertices:list):
+    odd_costs = {}
 
+    # compute the shortest distances between pairs of odd vertices
+    for i in range(len(odd_vertices)):
+        for j in range(i + 1, len(odd_vertices)):
+            v1 = odd_vertices[i]
+            v2 = odd_vertices[j]
+            if (v1, v2) in costs:
+                odd_costs[(v1, v2)] = costs[(v1, v2)]
+                odd_costs[(v2, v1)] = costs[(v1, v2)]
+            elif (v2, v1) in costs:
+                odd_costs[(v1, v2)] = costs[(v2, v1)]
+                odd_costs[(v2, v1)] = costs[(v2, v1)]
+            else:
+                continue
+        # Handle case when there is no direct edge between the odd vertices
+        # You may want to compute the shortest path between v1 and v2 using an appropriate algorithm
+
+    # Apply a maximum matching algorithm to find pairs of odd vertices to connect
+    def find_min_weight_perfect_matching(costs):
+        return
+
+
+
+
+    edges_to_add = find_min_weight_perfect_matching(costs)
+
+    # Add the matched edges to the original graph to create an Eulerian graph
+    for (v1, v2) in edges_to_add:
+        graph[v1].append(v2)
+        graph[v2].append(v1)
+
+    # Return the modified graph (now an Eulerian graph)
+    return graph
 def findCPP(graph, costs):
     for vertex, edges in graph.items():
         print(vertex, "->", edges)
     odd_vertices = find_odd_vertices(graph)
     if (odd_vertices):
-        # 1.find odds
-        # 2. pair them somehow (add new dublicating edges) and see what's going to be cheaper
+        # pair them somehow (add new dublicating edges) and see what's going to be cheaper
+
         # return is only for now, later i'll remove it
         print("ODD VERTICES")
         return
@@ -94,14 +128,13 @@ def findCPP(graph, costs):
     print("Eulerian Cycle:", "->".join(eulerian_cycle))
 
     return
+
 def find_odd_vertices(graph: dict) -> list:
     odd_vertices = []
     for vertex, connected_vertices in graph.items():
         if len(connected_vertices) % 2 == 1:
             odd_vertices.append(vertex)
     return odd_vertices
-
-
 
 
 def read_graph_from_csv(file_path):
@@ -151,6 +184,57 @@ def find_eulerian_cycle(graph, costs):
 
     return cycle, cost
 
+import heapq
+
+def dijkstra(graph, costs, start_vertex, end_vertex):
+    distances = {}  # for cur known distances
+    previous_vertices = {}  # to know path
+
+
+    for vertex in graph:
+        distances[vertex] = float('inf')
+        previous_vertices[vertex] = None
+
+    distances[start_vertex] = 0
+
+    priority_queue = [(0, start_vertex)]
+
+    while priority_queue:
+        current_distance, current_vertex = heapq.heappop(priority_queue)
+
+        # if the current distance is greater than known
+        if current_distance > distances[current_vertex]:
+            continue
+
+        # check if we reached the end_vertex
+        if current_vertex == end_vertex:
+            break
+
+        # look for the neighbors of the current_vertex
+        for neighbor in graph[current_vertex]:
+            weight = costs[(current_vertex, neighbor)]
+
+            # possible distance with this neighbour
+            possible_distance = distances[current_vertex] + weight
+
+            # update the distance and previous_vertex if the new distance is smaller
+            if possible_distance < distances[neighbor]:
+                distances[neighbor] = possible_distance
+                previous_vertices[neighbor] = current_vertex
+
+                # add the neighbor to the priority queue
+                heapq.heappush(priority_queue, (possible_distance, neighbor))
+
+    # build the shortest path from start_vertex to end_vertex
+    shortest_path = []
+    current_vertex = end_vertex
+    while current_vertex is not None:
+        shortest_path.append(current_vertex)
+        current_vertex = previous_vertices[current_vertex]
+
+    shortest_path.reverse()  # reverse the shortest path to get the correct order
+
+    return distances[end_vertex], shortest_path
 
 
 def readGraphs():
@@ -184,4 +268,4 @@ def readGraphs():
 
 
 
-readGraphs()
+# "C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs/graphs_4_2/file_1.csv"
