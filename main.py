@@ -147,23 +147,27 @@ import csv
 
 def read_graph_from_csv(file_path):
     graph = {}
+    costs = {}
     with open(file_path, 'r') as file:
         reader = csv.reader(file)
-        next(reader)  # Skip the header row
+        next(reader)  # skip the header row
         for row in reader:
             vertex1, vertex2, trail, distance = [item.strip() for item in row]
             if vertex1 not in graph:
                 graph[vertex1] = []
             if vertex2 not in graph:
                 graph[vertex2] = []
+            costs[(vertex1, vertex2)] = int(distance)
+            costs[(vertex2, vertex1)] = int(distance)
             graph[vertex1].append(vertex2)
             graph[vertex2].append(vertex1)
-    return graph
+    return graph, costs
 
 
-def find_eulerian_cycle(graph):
+def find_eulerian_cycle(graph, costs):
     stack = []
     cycle = []
+    cost = 0
 # choose start vertex (1)
     start_vertex = list(graph.keys())[0]
 
@@ -179,20 +183,23 @@ def find_eulerian_cycle(graph):
             graph[current_vertex].remove(next_vertex)
             graph[next_vertex].remove(current_vertex)
         else:
-           # push the vertex the we stuck to the eulerian cycle
+           # push the vertex we stuck to the eulerian cycle
             cycle.append(current_vertex)
             stack.pop()
 
-    return cycle
+    for i in range(len(cycle) - 1):
+        cost += costs[(cycle[i], cycle[i+1])]
+
+    return cycle, cost
 
 
 
 
-file_path = 'C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs_10_5/file_1.csv'  # Replace with the actual file path
-graph = read_graph_from_csv(file_path)
+file_path = 'C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs_10_5/file_1.csv'
+graph, costs = read_graph_from_csv(file_path)
 
 for vertex, edges in graph.items():
     print(vertex, "->", edges)
 
-eulerian_cycle = find_eulerian_cycle(graph)
+eulerian_cycle, cost = find_eulerian_cycle(graph, costs)
 print("Eulerian Cycle:", "->".join(eulerian_cycle))
