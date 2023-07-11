@@ -80,24 +80,18 @@ def generate_graphs(num_vertices, num_graphs):
 
 def make_magic(graph: dict, costs: dict, odd_vertices:list):
     odd_costs = {}
+    paths = {}
 
     # compute the shortest distances between pairs of odd vertices
     for i in range(len(odd_vertices)):
         for j in range(i + 1, len(odd_vertices)):
             v1 = odd_vertices[i]
             v2 = odd_vertices[j]
-            if (v1, v2) in costs:
-                odd_costs[(v1, v2)] = costs[(v1, v2)]
-                odd_costs[(v2, v1)] = costs[(v1, v2)]
-            elif (v2, v1) in costs:
-                odd_costs[(v1, v2)] = costs[(v2, v1)]
-                odd_costs[(v2, v1)] = costs[(v2, v1)]
-            else:
-                continue
-        # Handle case when there is no direct edge between the odd vertices
-        # You may want to compute the shortest path between v1 and v2 using an appropriate algorithm
+            odd_costs[(v1, v2)], paths[(v1, v2)] = dijkstra(graph, costs, v1, v2)
+            reversed_path = paths[(v1, v2)][::-1]
+            odd_costs[(v2, v1)], paths[(v2, v1 )] = odd_costs[(v1, v2)], reversed_path
 
-    # Apply a maximum matching algorithm to find pairs of odd vertices to connect
+    # min weight perfect matching algorithm to find pairs of odd vertices to connect
     def find_min_weight_perfect_matching(costs):
         return
 
@@ -266,6 +260,9 @@ def readGraphs():
     return
 
 
-
-
+graph, costs = read_graph_from_csv("C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs/graphs_4_2/file_1.csv")
+odd_vertices = find_odd_vertices(graph)
+make_magic(graph, costs, odd_vertices)
+# distance, path = dijkstra(graph, costs, "A", "A")
+print("gjdkfg")
 # "C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs/graphs_4_2/file_1.csv"
