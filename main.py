@@ -142,5 +142,57 @@ def findCPP():
 
     return 5
 
-odd_vert = find_vertices_with_odd_degree("C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs_10_5/file_1.csv")
-print(odd_vert)
+import csv
+
+
+def read_graph_from_csv(file_path):
+    graph = {}
+    with open(file_path, 'r') as file:
+        reader = csv.reader(file)
+        next(reader)  # Skip the header row
+        for row in reader:
+            vertex1, vertex2, trail, distance = [item.strip() for item in row]
+            if vertex1 not in graph:
+                graph[vertex1] = []
+            if vertex2 not in graph:
+                graph[vertex2] = []
+            graph[vertex1].append(vertex2)
+            graph[vertex2].append(vertex1)
+    return graph
+
+
+def find_eulerian_cycle(graph):
+    stack = []
+    cycle = []
+# choose start vertex (1)
+    start_vertex = list(graph.keys())[0]
+
+    stack.append(start_vertex)
+    while stack:
+        current_vertex = stack[-1]
+
+        # find unvisited edges (2)
+        unvisited_edges = [(current_vertex, next_vertex) for next_vertex in graph[current_vertex] if (((current_vertex, next_vertex) not in cycle) or ((next_vertex, current_vertex) not in cycle))]
+        if unvisited_edges:
+            next_vertex = unvisited_edges[0][1]
+            stack.append(next_vertex)
+            graph[current_vertex].remove(next_vertex)
+            graph[next_vertex].remove(current_vertex)
+        else:
+           # push the vertex the we stuck to the eulerian cycle
+            cycle.append(current_vertex)
+            stack.pop()
+
+    return cycle
+
+
+
+
+file_path = 'C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs_10_5/file_1.csv'  # Replace with the actual file path
+graph = read_graph_from_csv(file_path)
+
+for vertex, edges in graph.items():
+    print(vertex, "->", edges)
+
+eulerian_cycle = find_eulerian_cycle(graph)
+print("Eulerian Cycle:", "->".join(eulerian_cycle))
