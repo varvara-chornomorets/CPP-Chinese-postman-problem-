@@ -1,5 +1,0 @@
-node1,node2,trail,distance
-D,C,trail_1,4
-B,D,trail_2,7
-C,B,trail_3,1
-A,C,trail_4,4

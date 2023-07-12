@@ -5,8 +5,6 @@ import csv
 import heapq
 
 
-# in the input there can be dublicating edges but only with the same weight
-
 def generate_graphs(num_vertices, num_graphs):
     def generate_node_labels():
         alphabet = string.ascii_uppercase
@@ -20,10 +18,10 @@ def generate_graphs(num_vertices, num_graphs):
 
     node_labels = generate_node_labels()
     nodes_list = [next(node_labels) for _ in range(num_vertices)]
-    parent_directory = 'graphs'  # Parent directory name
-    directory = os.path.join(parent_directory, f'graphs_{num_vertices}_{num_graphs}')  # Directory name
+    parent_directory = 'graphs'
+    directory = os.path.join(parent_directory, f'graphs_{num_vertices}_{num_graphs}')
 
-    # Create the directory if it doesn't exist
+    # create the directory if it doesn't exist
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -45,10 +43,10 @@ def generate_graphs(num_vertices, num_graphs):
         return len(visited) == len(nodes)
 
     for i in range(num_graphs):
-        filename = f"file_{i + 1}.csv"  # Construct the filename for each CSV file
-        filepath = os.path.join(directory, filename)  # Create the full filepath
+        filename = f"file_{i + 1}.csv"  # construct the filename for each CSV file
+        filepath = os.path.join(directory, filename)  # create the full filepath
 
-        graph = {}  # Initialize an empty graph
+        graph = {}
         edges_added = 0
 
         with open(filepath, 'w', newline='', encoding='utf-8') as file:
@@ -60,16 +58,16 @@ def generate_graphs(num_vertices, num_graphs):
             while edges_added < num_vertices or not is_connected(graph, nodes_list):
                 node1 = random.choice(nodes_list)
                 node2 = random.choice(nodes_list)
-                trail = f'trail_{edges_added + 1}'  # Generate trail label
-                distance = random.randint(1, 10)  # Random distance between 1 and 10
+                trail = f'trail_{edges_added + 1}'  # generate trail label
+                distance = random.randint(1, 10)  # each edge has random cost between 1 and 10
 
-                # Avoid duplicate edges
+                # avoid duplicate edges
                 if node1 == node2 or (node1 in graph and node2 in graph[node1]):
                     continue
 
                 writer.writerow([node1, node2, trail, distance])
 
-                # Build the graph
+                # build the graph
                 if node1 not in graph:
                     graph[node1] = set()
                 if node2 not in graph:
@@ -276,8 +274,9 @@ def readGraphs():
                         graph, costs = read_graph_from_csv(file_path)
                         findCPP(graph, costs)
                     except Exception:
-                        print("graph is not eulerian i guess")
+                        print("something went wrong, i'm sorry")
                         pass
                     print()
 
     return
+
