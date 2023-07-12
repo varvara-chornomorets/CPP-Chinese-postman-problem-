@@ -2,7 +2,10 @@ import os
 import random
 import string
 import csv
+import heapq
 
+
+# in the input there can be dublicating edges but only with the same weight
 
 def generate_graphs(num_vertices, num_graphs):
     def generate_node_labels():
@@ -87,39 +90,59 @@ def make_magic(graph: dict, costs: dict, odd_vertices:list):
         for j in range(i + 1, len(odd_vertices)):
             v1 = odd_vertices[i]
             v2 = odd_vertices[j]
+            if(v1 == v2):
+                continue
             odd_costs[(v1, v2)], paths[(v1, v2)] = dijkstra(graph, costs, v1, v2)
             reversed_path = paths[(v1, v2)][::-1]
             odd_costs[(v2, v1)], paths[(v2, v1 )] = odd_costs[(v1, v2)], reversed_path
 
     # min weight perfect matching algorithm to find pairs of odd vertices to connect
-    def find_min_weight_perfect_matching(costs):
-        return
+    # efficient algorithm is quite complex so here i have just greedy algorithm
+
+    def min_weight_perfect_matching(odd_costs_dict):
+        paths_to_add = []
+        # create min heap with all edges in odd_costs
+        heap = [(cost, path) for path, cost in odd_costs_dict.items()]
+        heapq.heapify(heap)
+        while heap:
+            cost, path = heapq.heappop(heap)
+            paths_to_add.append(path)
+            v1, v2 = path
+            # delete from heap edges which are incident to vertices which are incident to our edge (connects start and end vertices of path)
+            heap = [(c, e) for c, e in heap if v1 not in e and v2 not in e]
+            heapq.heapify(heap)
+        return paths_to_add
+
+    def unwrap(paths_list):
+        edges_list = []
+        for path in paths_list:
+            full_path = paths[path]
+            for i in range(len(full_path) - 1):
+                edges_list.append((full_path[i], full_path[i+1]))
+        return edges_list
 
 
 
-
-    edges_to_add = find_min_weight_perfect_matching(costs)
-
-    # Add the matched edges to the original graph to create an Eulerian graph
+    paths_to_add = min_weight_perfect_matching(odd_costs)
+    #unwrap edges
+    edges_to_add = unwrap(paths_to_add)
+    # add the unwraped(!!!) edges to the original graph to create an Eulerian graph
     for (v1, v2) in edges_to_add:
         graph[v1].append(v2)
         graph[v2].append(v1)
 
-    # Return the modified graph (now an Eulerian graph)
+    # return the modified graph (now an Eulerian graph)
     return graph
 def findCPP(graph, costs):
     for vertex, edges in graph.items():
         print(vertex, "->", edges)
     odd_vertices = find_odd_vertices(graph)
     if (odd_vertices):
-        # pair them somehow (add new dublicating edges) and see what's going to be cheaper
-
-        # return is only for now, later i'll remove it
-        print("ODD VERTICES")
-        return
+        make_magic(graph, costs, odd_vertices)
 
     eulerian_cycle, cost = find_eulerian_cycle(graph, costs)
     print("Eulerian Cycle:", "->".join(eulerian_cycle))
+    print(f"cost is {cost}")
 
     return
 
@@ -258,11 +281,3 @@ def readGraphs():
                     print()
 
     return
-
-
-graph, costs = read_graph_from_csv("C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs/graphs_4_2/file_1.csv")
-odd_vertices = find_odd_vertices(graph)
-make_magic(graph, costs, odd_vertices)
-# distance, path = dijkstra(graph, costs, "A", "A")
-print("gjdkfg")
-# "C:/Users/chorn/PycharmProjects/CPP-Chinese-postman-problem/graphs/graphs_4_2/file_1.csv"
